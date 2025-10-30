@@ -4,6 +4,8 @@
 
 from telethon import TelegramClient, events
 import asyncio, time, datetime, random, platform, psutil, telethon, os, sys
+from dotenv import load_dotenv
+load_dotenv()
 from collections import deque, defaultdict
 
 # ===== CONFIG =====
