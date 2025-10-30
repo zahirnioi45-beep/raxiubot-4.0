@@ -7,10 +7,10 @@ import asyncio, time, datetime, random, platform, psutil, telethon, os, sys
 from collections import deque, defaultdict
 
 # ===== CONFIG =====
-api_id = int(os.getenv("API_ID") or tempel api id kamu disini)
-api_hash = os.getenv("API_HASH") or "tempel api hash kamu disini"
-session_name = os.getenv("SESSION_NAME") or "userbot_session"
-OWNER_ID = int(os.getenv("OWNER_ID") or tempel id telegram kamu disini)
+api_id = int(os.getenv("API_ID") 
+api_hash = os.getenv("API_HASH") 
+session_name = os.getenv("SESSION_NAME") 
+OWNER_ID = int(os.getenv("OWNER_ID") 
 client = TelegramClient(session_name, api_id, api_hash)
 START_TIME = time.time()
 
