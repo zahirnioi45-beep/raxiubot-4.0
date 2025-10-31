@@ -8,6 +8,8 @@ from dotenv import load_dotenv
 load_dotenv()
 from collections import deque, defaultdict
 
+from modules.block_reply import *
+
 # ===== CONFIG =====
 api_id = int(os.getenv("API_ID"))
 api_hash = os.getenv("API_HASH") 
