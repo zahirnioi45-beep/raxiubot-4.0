@@ -1,0 +1,68 @@
+import asyncio
+from telethon import events
+from telethon.tl.functions.contacts import BlockRequest, UnblockRequest, GetBlockedRequest
+from userbot import bot  # pastikan ini sesuai nama client di userbot.py
+
+# Command .block
+@bot.on(events.NewMessage(outgoing=True, pattern=r"^\.block(?: (.*))?$"))
+async def block_on_reply(event):
+    reason = event.pattern_match.group(1) or ""
+    if not event.is_reply:
+        await event.reply("⚠️ Balas pesan pengguna yang ingin diblokir dengan `.block`")
+        return
+
+    reply = await event.get_reply_message()
+    sender = await reply.get_sender()
+    if not sender:
+        await event.reply("⚠️ Gagal mendapatkan info pengguna.")
+        return
+
+    try:
+        await bot(BlockRequest(sender.id))
+        name = sender.first_name or "Pengguna"
+        await event.reply(f"✅ Sip — pengguna [{name}](tg://user?id={sender.id}) telah diblokir.\n{('Alasan: ' + reason) if reason else ''}")
+    except Exception as e:
+        await event.reply(f"❌ Gagal memblokir: {e}")
+
+# Command .unblock
+@bot.on(events.NewMessage(outgoing=True, pattern=r"^\.unblock$"))
+async def unblock_on_reply(event):
+    if not event.is_reply:
+        await event.reply("⚠️ Balas pesan pengguna yang ingin dibuka blokirnya dengan `.unblock`")
+        return
+
+    reply = await event.get_reply_message()
+    sender = await reply.get_sender()
+    if not sender:
+        await event.reply("⚠️ Gagal mendapatkan info pengguna.")
+        return
+
+    try:
+        await bot(UnblockRequest(sender.id))
+        name = sender.first_name or "Pengguna"
+        await event.reply(f"✅ Oke cog — pengguna [{name}](tg://user?id={sender.id}) ngentot ini sudah dibuka blokirnya .")
+    except Exception as e:
+        await event.reply(f"❌ Gagal unblock cog: {e}")
+
+# Command .blockedlist
+@bot.on(events.NewMessage(outgoing=True, pattern=r"^\.blockedlist$"))
+async def list_blocked(event):
+    try:
+        res = await bot(GetBlockedRequest(offset=0, limit=100))
+        users = res.users
+        if not users:
+            await event.reply("ℹ️ Tidak ada pengguna yang diblokir.")
+            return
+        msg_lines = ["📛 Daftar pengguna yang diblokir:"]
+        for u in users:
+            uid = u.id
+            name = (u.first_name or "") + ((" " + u.last_name) if u.last_name else "")
+            if not name.strip():
+                name = "Pengguna"
+            msg_lines.append(f"• [{name}](tg://user?id={uid}) — `{uid}`")
+        text = "\n".join(msg_lines)
+        if len(text) > 4000:
+            text = text[:3990] + "\n…"
+        await event.reply(text)
+    except Exception as e:
+        await event.reply(f"❌ Gagal mengambil daftar blokir: {e}")
